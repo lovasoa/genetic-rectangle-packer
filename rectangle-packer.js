@@ -75,7 +75,7 @@ genetic.fitness = function(entity) {
 		}
 		prev.sum += cur.x + cur.y;
 		prev.maxx = Math.max(cur.x + cur.w, prev.maxx);
-		prev.maxy = Math.max(cur.y + cur.y, prev.maxy);
+		prev.maxy = Math.max(cur.y + cur.h, prev.maxy);
 		return prev;
 	}, {overlap:0, sum:0, maxx:0, maxy: 0});
 
