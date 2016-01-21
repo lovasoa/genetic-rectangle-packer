@@ -1,13 +1,17 @@
 var ctx = document.querySelector("#scratch").getContext("2d");
-ctx.fillStyle = "rgba(155,100,45,0.2)";
 ctx.strokeStyle = "rgba(155,100,45,0.9)";
 function drawRects (rects){
 	var w = ctx.canvas.width, h = ctx.canvas.height;
 	ctx.clearRect(0,0, w, h);
 	for(var i=0; i<rects.length; i++) {
 		var e = rects[i];
+		ctx.fillStyle = "rgba(155,100,45,0.2)";
 		ctx.fillRect(e.x*200, e.y*200, e.w*200, e.h*200);
 		ctx.strokeRect(e.x*200, e.y*200, e.w*200, e.h*200);
+		ctx.fillStyle = "black";
+		var txt = Math.round(e.w*200) + "x" + Math.round(e.h*200);
+		var m = ctx.measureText(txt).width;
+		ctx.fillText(txt, e.x*200 + e.w*200/2 - m/2, e.y*200 + e.h*200/2);
 	}
 }
 
