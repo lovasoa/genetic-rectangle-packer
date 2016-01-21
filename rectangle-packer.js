@@ -1,5 +1,5 @@
 var ctx = document.querySelector("#scratch").getContext("2d");
-ctx.fillStyle = "rgba(155,100,45,0.2)"
+ctx.fillStyle = "rgba(155,100,45,0.2)";
 
 var rects = [];
 for(var i=0; i<15; i++) {
@@ -24,17 +24,17 @@ genetic.mutate = function(entity) {
 		return n < 0 ? 0 : n;
 	}
 	// allow chromosomal drift with this range (-0.05, 0.05)
-	var drift = ((Math.random()-0.5)*2) * .1;
+	var drift = ((Math.random()-0.5)*2) * .25;
 	var copy = entity.map(function(r) {
 		var dir = Math.random() > .5;
 		return {
-				x: change(r.x),
-				y: change(r.y),
+				x: dir ? change(r.x) : r.x,
+				y: !dir ? change(r.y) : r.y,
 				w: r.w,
 				h: r.h
 		}
 	});
-	if (Math.random() > 0.5) {
+	while (Math.random() > 0.5) {
 		var i = Math.floor(Math.random() * entity.length);
 		var j = Math.floor(Math.random() * entity.length);
 		copy[i].x = entity[j].x; copy[i].y = entity[j].y;
@@ -63,10 +63,12 @@ genetic.fitness = function(entity) {
 				prev.overlap += that.intersection(entity[i], entity[j]);
 		}
 		prev.sum += cur.x + cur.y;
+		prev.maxx = Math.max(cur.x + cur.w, prev.maxx);
+		prev.maxy = Math.max(cur.y + cur.y, prev.maxy);
 		return prev;
-	}, {overlap:0, sum:0});
+	}, {overlap:0, sum:0, maxx:0, maxy: 0});
 
-	return (red.overlap > 0) ? red.overlap : -1/red.sum;
+	return (red.overlap > 0) ? red.overlap : -1/(red.maxy * red.maxy * red.sum);
 };
 
 genetic.Rectangle = function(x,y,w,h) {
@@ -112,7 +114,7 @@ var config = {
 			, "size": 150
 			, "maxResults" : 1
 			, "crossover": 0.7
-			, "mutation": 0.3
+			, "mutation": 0.4
 			, "skip": 10
 			, "fittestAlwaysSurvives": true
 };

@@ -4,16 +4,25 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title>Genetic.js Rectangle packer</title>
 	<script src="lib/genetic.js"></script>
+	<style>
+#config {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+	</style>
 </head>
 <body>
 
 <h1>Genetic Rectangle packer</h1>
 
 <canvas id="scratch" width="1000" height="800" style="cursor: crosshair;"></canvas>
+<div id="config">
 <ul>
 	<li>Generation: <b id="gen"></b>
 	<li>Fitness: <b id="fitness"></b>
 </ul>
+</div>
 
 <script src="rectangle-packer.js"></script>
 
