@@ -79,7 +79,7 @@ genetic.fitness = function(entity) {
 		return prev;
 	}, {overlap:0, sum:0, maxx:0, maxy: 0});
 
-	return (red.overlap > 0) ? red.overlap : -1/(red.maxy * red.maxy * red.sum);
+	return (red.overlap > 0) ? red.overlap : -1/(red.maxy * red.maxx * red.sum);
 };
 
 genetic.Rectangle = function(x,y,w,h) {
