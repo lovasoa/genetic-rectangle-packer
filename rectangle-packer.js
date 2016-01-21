@@ -35,7 +35,7 @@ genetic.mutate = function(entity) {
 		return n < 0 ? 0 : n;
 	}
 	// allow chromosomal drift with this range (-0.05, 0.05)
-	var drift = ((Math.random()-0.5)*2) * .25;
+	var drift = ((Math.random()-0.5)*2) * this.userData["drift"];
 	var copy = entity.map(function(r) {
 		var dir = Math.random() > .5;
 		return {
@@ -127,7 +127,8 @@ var config = {
 			, "webWorkers" : true
 };
 var userData = {
-	"rects" : rects
+	"rects" : rects,
+	"drift" : 0.25
 }
 
 document.querySelector("form#config").onsubmit = function(evt) {
@@ -136,6 +137,7 @@ document.querySelector("form#config").onsubmit = function(evt) {
 	for (var i = 0; i < vals.length; i++) {
 		var input = vals[i];
 		config[input.name] = parseFloat(input.value) || 0;
+		userData[input.name] = parseFloat(input.value) || 0;
 	}
 	document.querySelector("#newconf").disabled = true;
 	console.log(config);
