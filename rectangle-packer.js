@@ -1,10 +1,21 @@
 var ctx = document.querySelector("#scratch").getContext("2d");
 ctx.fillStyle = "rgba(155,100,45,0.2)";
+ctx.strokeStyle = "rgba(155,100,45,0.9)";
+function drawRects (rects){
+	var w = ctx.canvas.width, h = ctx.canvas.height;
+	ctx.clearRect(0,0, w, h);
+	for(var i=0; i<rects.length; i++) {
+		var e = rects[i];
+		ctx.fillRect(e.x*200, e.y*200, e.w*200, e.h*200);
+		ctx.strokeRect(e.x*200, e.y*200, e.w*200, e.h*200);
+	}
+}
 
 var rects = [];
 for(var i=0; i<15; i++) {
 	rects.push({x:Math.random(), y:Math.random(), w:Math.random()+.1, h:Math.random()+.1});
 }
+drawRects(rects);
 
 var genetic = Genetic.create();
 
@@ -100,25 +111,33 @@ genetic.notification = function(pop, generation, stats, isFinished) {
 	document.querySelector("#gen").textContent = generation;
 	document.querySelector("#fitness").textContent = pop[0].fitness;
 
-	var w = ctx.canvas.width, h = ctx.canvas.height;
-	ctx.clearRect(0,0, w, h);
-	for(var i=0; i<best.length; i++) {
-		var e = best[i];
-		ctx.fillRect(e.x*200, e.y*200, e.w*200, e.h*200);
-		ctx.strokeRect(e.x*200, e.y*200, e.w*200, e.h*200);
-	}
+	drawRects(best);
+
+	if (isFinished) document.querySelector("#newconf").disabled = false;
 };
 
 var config = {
-			"iterations": 1e4
-			, "size": 150
+			"iterations": 500
+			, "size": 50
 			, "maxResults" : 1
 			, "crossover": 0.7
 			, "mutation": 0.4
 			, "skip": 10
 			, "fittestAlwaysSurvives": true
+			, "webWorkers" : true
 };
 var userData = {
 	"rects" : rects
 }
-genetic.evolve(config, userData);
+
+document.querySelector("form#config").onsubmit = function(evt) {
+	evt.preventDefault();
+	var vals = evt.target.querySelectorAll("input[type=range]");
+	for (var i = 0; i < vals.length; i++) {
+		var input = vals[i];
+		config[input.name] = parseFloat(input.value) || 0;
+	}
+	document.querySelector("#newconf").disabled = true;
+	console.log(config);
+	genetic.evolve(config, userData);
+};
