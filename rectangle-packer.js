@@ -14,6 +14,9 @@ function drawRects (rects){
 		ctx.fillText(txt, e.x*200 + e.w*200/2 - m/2, e.y*200 + e.h*200/2);
 	}
 }
+function printFitness(f) {
+	return JSON.stringify(f.map(function(n){return Math.round(n*1e4)}))
+}
 
 var rects = [];
 for(var i=0; i<15; i++) {
@@ -23,9 +26,17 @@ drawRects(rects);
 
 var genetic = Genetic.create();
 
-genetic.optimize = Genetic.Optimize.Minimize;
 genetic.select1 = Genetic.Select1.Random;
 genetic.select2 = Genetic.Select2.FittestRandom;
+
+genetic.optimize = function minimizeTuples(a, b) {
+	for(var i=0; i<a.length; i++) {
+		if(a[i] < b[i]) return true;
+		else if(a[i] > b[i]) return false;
+		// continue only if a[i] == b[i]
+	}
+	return true;
+}
 
 genetic.seed = function() {
 	return this.userData.rects.map(function(r) {
@@ -83,7 +94,7 @@ genetic.fitness = function(entity) {
 		return prev;
 	}, {overlap:0, sum:0, maxx:0, maxy: 0});
 
-	return (red.overlap > 0) ? red.overlap : -1/(red.maxy * red.maxx * red.sum);
+	return [red.overlap, red.maxy * red.maxx, red.sum];
 };
 
 genetic.Rectangle = function(x,y,w,h) {
@@ -113,7 +124,7 @@ genetic.generation = function(pop, generation, stats) {
 genetic.notification = function(pop, generation, stats, isFinished) {
 	var best = pop[0].entity;
 	document.querySelector("#gen").textContent = generation;
-	document.querySelector("#fitness").textContent = pop[0].fitness;
+	document.querySelector("#fitness").textContent = printFitness(pop[0].fitness);
 
 	drawRects(best);
 
